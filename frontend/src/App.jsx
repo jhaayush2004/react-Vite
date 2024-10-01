@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import { Button } from "./components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./components/ui/dropdown-menu"
 import Home from './components/Home'
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -23,27 +25,49 @@ function App() {
     const savedUser = localStorage.getItem('user');
     return savedUser ? JSON.parse(savedUser) : null;
   });
-  const handleLogout = () => {
-    setUser(null)
-  }
 
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
-          <header className="p-5 bg-white shadow-md">
+        <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-blue-100">
+          <header className="p-5 bg-white shadow-md sticky top-0 z-50">
             <nav className="container mx-auto flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-blue-600">Socratic Learning</h1>
-              <div className="space-x-4">
-                <Link to="/"><Button variant="ghost">Home</Button></Link>
+              <Link to="/" className="text-3xl font-extrabold text-blue-600">
+                Socratic Learning
+              </Link>
+              <div className="flex items-center space-x-6">
+                <Link to="/">
+                  <Button variant="ghost" className="text-lg font-semibold">Home</Button>
+                </Link>
                 {user ? (
-                  <>
-                    <span>Welcome, {user.name}</span>
-                    <Link to="/profile" > <Button variant="solid">Profile</Button></Link>
-                    
-                    <Button variant="ghost" onClick={handleLogout}>Logout</Button>
-                  </>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end" forceMount>
+                      <DropdownMenuItem className="flex-col items-start">
+                        <div className="text-sm font-medium">Welcome, {user.name}</div>
+                        <div className="text-xs text-gray-500">{user.email}</div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link to="/profile" className="w-full">Profile</Link>
+                      </DropdownMenuItem>
+                      
+                      <DropdownMenuItem onClick={handleLogout}>
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 ) : (
                   <>
                     <Link to="/login"><Button variant="ghost">Login</Button></Link>
@@ -54,7 +78,7 @@ function App() {
             </nav>
           </header>
 
-          <main className="m-2">
+          <main className="flex-grow container mx-auto py-10 px-5">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login user={user} setUser={setUser} />} />
@@ -66,20 +90,20 @@ function App() {
               <Route path="/chat" element={<AIChat />} />
               <Route path="/mcq-generator" element={<MCQGenerator />} />
               <Route path="/resources" element={<ResourcesDisplay />} />
-              <Route path="/profile" element={<ProfilePage></ProfilePage>} />
-              <Route path='multimodal-chat' element={<MultimodalChat></MultimodalChat>} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/multimodal-chat" element={<MultimodalChat />} />
             </Routes>
           </main>
 
-          <footer className="bg-gray-100 py-8 mt-16">
-            <div className="container mx-auto text-center text-gray-600">
-              <p>&copy; 2024 Socrates Learning. All rights reserved.</p>
+          <footer className="bg-white py-8 border-t mt-auto">
+            <div className="container mx-auto text-center text-gray-500">
+              <p>&copy; 2024 Socratic Learning. All rights reserved.</p>
             </div>
           </footer>
         </div>
       </Router>
     </QueryClientProvider>
-  )
+  );
 }
 
-export default App
+export default App;
