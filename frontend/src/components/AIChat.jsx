@@ -114,13 +114,14 @@ const AIChat = () => {
       setIsLoading(false);
     }
   };
-
+  
   const suggestionCards = [
-    { text: "Suggest beaches to visit in a city, including details", icon: <Compass className="w-6 h-6" /> },
-    { text: "Evaluate and rank common camera categories", icon: <Camera className="w-6 h-6" /> },
-    { text: "Create trivia questions about a specific topic", icon: <HelpCircle className="w-6 h-6" /> },
-    { text: "Help design a database schema for a business", icon: <Code className="w-6 h-6" /> },
+    { text: "Suggest optimizations for my sorting algorithm", icon: <HelpCircle className="w-6 h-6" /> },
+    { text: "Evaluate and rank common data structures for searching", icon: <HelpCircle className="w-6 h-6" /> },
+    { text: "Create coding challenges for specific algorithm topics", icon: <HelpCircle className="w-6 h-6" /> },
+    { text: "Help design an efficient sorting algorithm for large datasets", icon: <HelpCircle className="w-6 h-6" /> },
   ];
+  
 
   return (
     <div className="flex flex-col h-screen bg-[#202124] text-white">
