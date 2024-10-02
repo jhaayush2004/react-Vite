@@ -4,6 +4,10 @@ import { Button } from "./ui/button";
 import { sortingAlgorithms } from './AlgorithmList';
 import Editor from "@monaco-editor/react";
 import axios from 'axios';
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { motion } from 'framer-motion';
+import { ChevronLeft, Code, Play } from 'lucide-react';
 
 const AlgorithmEditor = () => {
   const { algoName } = useParams();
@@ -42,22 +46,7 @@ void ${functionName}(vector<int>& arr, int n)
     // Implement your ${algoName} algorithm here
 }
 
-int main() {
-    int n;
-    cin >> n;
-    vector<int> arr(n);
-    for(int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-    
-    ${functionName}(arr, n);
-    
-    for(int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
-    return 0;
-}`;
+`;
       default:
         return '';
     }
@@ -67,8 +56,9 @@ int main() {
     setCode(newValue);
   };
 
-  const handleLanguageChange = (event) => {
-    setLanguage(event.target.value);
+  const handleLanguageChange = (value) => {
+    setLanguage(value);
+    setCode(getInitialCode(algorithm.name, value));
   };
 
   const handleSubmit = async () => {
@@ -88,88 +78,102 @@ int main() {
     }
   };
 
-  const editorOptions = {
-    selectOnLineNumbers: true,
-    roundedSelection: false,
-    readOnly: false,
-    cursorStyle: 'line',
-    automaticLayout: true,
-  };
-
   if (!algorithm) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="container mx-auto mt-8">
-      <h1 className="text-3xl font-bold mb-6">{algorithm.name} - Code Editor</h1>
-      
-      <div className="mb-4 flex space-x-4">
-        <Link to={`/visualizer/${algoName}`} className="text-blue-600 hover:underline">
-          Go to Sorting Visualizer
-        </Link>
-        <Link to="/interactive-lessons" className="text-blue-600 hover:underline">
-          Interactive Lessons
-        </Link>
-      </div>
-
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Pseudocode:</h2>
-        <pre className="bg-gray-100 p-4 rounded">{algorithm.pseudocode}</pre>
-      </div>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Sample Test Case:</h2>
-        <p>{algorithm.testCases}</p>
-      </div>
-      <div className="mb-4">
-        <label htmlFor="language-select" className="block text-sm font-medium text-gray-700">
-          Select Language:
-        </label>
-        <select
-          id="language-select"
-          value={language}
-          onChange={handleLanguageChange}
-          className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-        >
-          <option value="javascript">JavaScript</option>
-          <option value="python">Python</option>
-          <option value="java">Java</option>
-          <option value="cpp">C++</option>
-        </select>
-      </div>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">Your Code:</h2>
-        <Editor
-          height="400px"
-          language={language === 'cpp' ? 'cpp' : language}
-          theme="vs-dark"
-          value={code}
-          onChange={handleCodeChange}
-          options={{
-            selectOnLineNumbers: true,
-            roundedSelection: false,
-            readOnly: false,
-            cursorStyle: 'line',
-            automaticLayout: true,
-          }}
-        />
-      </div>
-      <Button onClick={handleSubmit} disabled={isLoading}>
-        {isLoading ? 'Evaluating Code...' : 'Submit and Evaluate'}
-      </Button>
-      {testResult && (
-        <div className={`mt-4 p-4 rounded ${
-          testResult.category === 'GREEN' ? 'bg-green-100' : 
-          testResult.category === 'YELLOW' ? 'bg-yellow-100' : 'bg-red-100'
-        }`}>
-          <h3 className="font-bold">{testResult.category} Evaluation</h3>
-          <p className="mt-2 font-semibold">Evaluation:</p>
-          <p>{testResult.evaluation}</p>
-          <p className="mt-2 font-semibold">Suggestions:</p>
-          <p>{testResult.suggestions}</p>
-        </div>
-      )}
-    </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto px-4 py-8"
+    >
+      <Card className="mb-8">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <Link to="/algorithms" className="text-blue-600 hover:underline flex items-center">
+              <ChevronLeft className="mr-2" /> Back to Algorithms
+            </Link>
+            <CardTitle className="text-3xl font-bold">{algorithm.name}</CardTitle>
+            <div className="w-24"></div> {/* Spacer for alignment */}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Pseudocode:</h2>
+            <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">{algorithm.pseudocode}</pre>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Sample Test Case:</h2>
+            <p className="bg-gray-100 p-4 rounded-lg">{algorithm.testCases}</p>
+          </div>
+          <div className="flex justify-between items-center mb-4">
+            <Select onValueChange={handleLanguageChange} value={language}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="javascript">JavaScript</SelectItem>
+                <SelectItem value="python">Python</SelectItem>
+                <SelectItem value="java">Java</SelectItem>
+                <SelectItem value="cpp">C++</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="space-x-4">
+              <Link to={`/visualizer/${algoName}`}>
+                <Button variant="outline" className="flex items-center">
+                  <Code className="mr-2" /> Visualize
+                </Button>
+              </Link>
+             
+            </div>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-2">Your Code:</h2>
+            <Editor
+              height="400px"
+              language={language === 'cpp' ? 'cpp' : language}
+              theme="vs-dark"
+              value={code}
+              onChange={handleCodeChange}
+              options={{
+                minimap: { enabled: false },
+                fontSize: 14,
+                lineNumbers: 'on',
+                roundedSelection: false,
+                scrollBeyondLastLine: false,
+                automaticLayout: true,
+              }}
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={handleSubmit} disabled={isLoading} className="flex items-center">
+              {isLoading ? 'Evaluating...' : (
+                <>
+                  <Play className="mr-2" /> Run and Evaluate
+                </>
+              )}
+            </Button>
+          </div>
+          {testResult && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className={`mt-6 p-4 rounded-lg ${
+                testResult.category === 'GREEN' ? 'bg-green-100' : 
+                testResult.category === 'YELLOW' ? 'bg-yellow-100' : 'bg-red-100'
+              }`}
+            >
+              <h3 className="font-bold text-lg mb-2">{testResult.category} Evaluation</h3>
+              <p className="mb-2"><span className="font-semibold">Evaluation:</span> {testResult.evaluation}</p>
+              <p><span className="font-semibold">Suggestions:</span> {testResult.suggestions}</p>
+            </motion.div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 

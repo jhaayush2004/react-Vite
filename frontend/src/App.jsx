@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import { Button } from "./components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "./components/ui/avatar"
+import { Avatar, AvatarFallback } from "./components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./components/ui/dropdown-menu"
+import { UserCircle } from 'lucide-react'
 import Home from './components/Home'
 import Login from './components/Login'
 import Signup from './components/Signup'
@@ -16,6 +17,7 @@ import MCQGenerator from './components/MCQGenerator'
 import ResourcesDisplay from './components/ResourcesDisplay'
 import ProfilePage from './components/ProfilePage'
 import MultimodalChat from './components/MultiModalChat'
+import OurFeatures from './components/OurFeatures'
 
 // Create a client
 const queryClient = new QueryClient();
@@ -44,13 +46,23 @@ function App() {
                 <Link to="/">
                   <Button variant="ghost" className="text-lg font-semibold">Home</Button>
                 </Link>
+
+                <Link to="/our-features">
+                  <Button variant="ghost" className="text-lg font-semibold">Our Features</Button>
+                </Link>
+
                 {user ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.avatar} alt={user.name} />
-                          <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                          {user.avatar ? (
+                            <img src={user.avatar} alt={user.name} className="rounded-full" />
+                          ) : (
+                            <AvatarFallback>
+                              <UserCircle className="h-6 w-6 text-gray-400" />
+                            </AvatarFallback>
+                          )}
                         </Avatar>
                       </Button>
                     </DropdownMenuTrigger>
@@ -78,7 +90,7 @@ function App() {
             </nav>
           </header>
 
-          <main className="flex-grow container mx-auto py-10 px-5">
+          <main className="flex-grow container  py-10">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login user={user} setUser={setUser} />} />
@@ -92,6 +104,7 @@ function App() {
               <Route path="/resources" element={<ResourcesDisplay />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/multimodal-chat" element={<MultimodalChat />} />
+              <Route path="/our-features" element={<OurFeatures />} />
             </Routes>
           </main>
 

@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Flame, Trophy } from 'lucide-react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
+import { UserCircle } from 'lucide-react'
+import { AvatarFallback } from '@radix-ui/react-avatar';
 
 
 
@@ -93,11 +95,12 @@ const ProfilePage = () => {
       <Card className="max-w-4xl mx-auto shadow-xl">
         <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
           <div className="flex items-center space-x-4">
-            <Avatar
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`}
-              alt={name}
-              className="w-20 h-20 border-4 border-white shadow-lg"
-            />
+          <Avatar className="h-8 w-8">
+   
+              <AvatarFallback>
+                <UserCircle className="h-6 w-6 text-gray-400" />
+              </AvatarFallback>
+          </Avatar>
             <div>
               <CardTitle className="text-3xl font-bold">{name}</CardTitle>
               <p className="text-sm opacity-75">{email}</p>

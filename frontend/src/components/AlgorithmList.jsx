@@ -1,7 +1,9 @@
 import React from 'react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./ui/card";
 import { Button } from "./ui/button";
-import { useNavigate } from 'react-router-dom';
+import { ChevronRight } from 'lucide-react';
 
 export const sortingAlgorithms = [
   {
@@ -9,82 +11,122 @@ export const sortingAlgorithms = [
     description: "A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.",
     timeComplexity: "O(n^2)",
     spaceComplexity: "O(1)",
-    pseudocode: "for i = 1 to n-1\n  for j = 0 to n-i-1\n    if A[j] > A[j+1]\n      swap A[j] and A[j+1]",
-    testCases: "[5, 1, 4, 2, 8] → [1, 2, 4, 5, 8]"
+    pseudocode: "for i from 1 to N\n    for j from 0 to N-i\n        if a[j] > a[j+1]\n            swap a[j] and a[j+1]",
+    testCases: "Input: [64, 34, 25, 12, 22, 11, 90]\nOutput: [11, 12, 22, 25, 34, 64, 90]"
   },
   {
     name: "Selection Sort",
-    description: "An in-place comparison sorting algorithm that divides the input list into two parts: a sorted portion at the left end and an unsorted portion at the right end.",
+    description: "Divides the input list into two parts: a sorted portion at the left end and an unsorted portion at the right end. Initially, the sorted portion is empty and the unsorted portion is the entire list.",
     timeComplexity: "O(n^2)",
     spaceComplexity: "O(1)",
-    pseudocode: "for i = 0 to n-1\n  find the minimum element in the unsorted portion\n  swap it with the first element of the unsorted portion",
-    testCases: "[5, 1, 4, 2, 8] → [1, 2, 4, 5, 8]"
+    pseudocode: "for i from 0 to N-1\n    min = i\n    for j from i+1 to N\n        if a[j] < a[min]\n            min = j\n    swap a[i] and a[min]",
+    testCases: "Input: [64, 25, 12, 22, 11]\nOutput: [11, 12, 22, 25, 64]"
   },
   {
     name: "Insertion Sort",
     description: "Builds the final sorted array one item at a time. It is much less efficient on large lists than more advanced algorithms such as quicksort, heapsort, or merge sort.",
     timeComplexity: "O(n^2)",
     spaceComplexity: "O(1)",
-    pseudocode: "for i = 1 to n-1\n  for j = i-1 to 0\n    if A[j] > A[i]\n      shift A[j] to the right\n    else\n      break",
-    testCases: "[5, 1, 4, 2, 8] → [1, 2, 4, 5, 8]"
+    pseudocode: "for i from 1 to N\n    key = a[i]\n    j = i - 1\n    while j >= 0 and a[j] > key\n        a[j+1] = a[j]\n        j = j - 1\n    a[j+1] = key",
+    testCases: "Input: [12, 11, 13, 5, 6]\nOutput: [5, 6, 11, 12, 13]"
   },
   {
     name: "Merge Sort",
-    description: "An efficient, stable, divide-and-conquer algorithm. Most implementations produce a stable sort, meaning that the order of equal elements is the same in the input and output.",
+    description: "An efficient, stable, divide-and-conquer algorithm. Conceptually, it works as follows: Divide the unsorted list into n sublists, each containing one element, then repeatedly merge sublists to produce new sorted sublists until there is only one sublist remaining.",
     timeComplexity: "O(n log n)",
     spaceComplexity: "O(n)",
-    pseudocode: "merge sort(A)\n  if |A| <= 1\n    return A\n  mid = |A|/2\n  left = merge sort(A[0..mid])\n  right = merge sort(A[mid+1..|A|])\n  return merge(left, right)",
-    testCases: "[5, 1, 4, 2, 8] → [1, 2, 4, 5, 8]"
+    pseudocode: "mergeSort(arr, l, r):\n    if l < r\n        m = (l+r)/2\n        mergeSort(arr, l, m)\n        mergeSort(arr, m+1, r)\n        merge(arr, l, m, r)",
+    testCases: "Input: [38, 27, 43, 3, 9, 82, 10]\nOutput: [3, 9, 10, 27, 38, 43, 82]"
   },
   {
     name: "Quick Sort",
-    description: "An efficient, in-place sorting algorithm. Developed by British computer scientist Tony Hoare in 1959 and published in 1961, it is still a commonly used algorithm for sorting.",
+    description: "An efficient, in-place sorting algorithm. Quicksort is a divide-and-conquer algorithm. It works by selecting a 'pivot' element from the array and partitioning the other elements into two sub-arrays, according to whether they are less than or greater than the pivot.",
     timeComplexity: "O(n log n) average, O(n^2) worst case",
     spaceComplexity: "O(log n)",
-    pseudocode: "quick sort(A)\n  if |A| <= 1\n    return A\n  pivot = select pivot(A)\n  left = elements less than pivot\n  right = elements greater than pivot\n  return quick sort(left) + [pivot] + quick sort(right)",
-    testCases: "[5, 1, 4, 2, 8] → [1, 2, 4, 5, 8]"
+    pseudocode: "quickSort(arr, low, high):\n    if low < high\n        pi = partition(arr, low, high)\n        quickSort(arr, low, pi - 1)\n        quickSort(arr, pi + 1, high)",
+    testCases: "Input: [10, 7, 8, 9, 1, 5]\nOutput: [1, 5, 7, 8, 9, 10]"
   },
-  // ... Add other algorithms here
+  {
+    name: "Heap Sort",
+    description: "A comparison-based sorting algorithm that uses a binary heap data structure. It divides its input into a sorted and an unsorted region, and it iteratively shrinks the unsorted region by extracting the largest element and moving that to the sorted region.",
+    timeComplexity: "O(n log n)",
+    spaceComplexity: "O(1)",
+    pseudocode: "heapSort(arr):\n    buildMaxHeap(arr)\n    for i from n to 1\n        swap arr[1] with arr[i]\n        heapify(arr, 1, i-1)",
+    testCases: "Input: [12, 11, 13, 5, 6, 7]\nOutput: [5, 6, 7, 11, 12, 13]"
+  },
+  {
+    name: "Counting Sort",
+    description: "An integer sorting algorithm that operates by counting the number of objects that possess distinct key values, and applying prefix sum on those counts to determine the positions of each key value in the output sequence.",
+    timeComplexity: "O(n + k) where k is the range of the non-negative key values",
+    spaceComplexity: "O(n + k)",
+    pseudocode: "countingSort(arr, n, k):\n    count = new array of k zeros\n    for i from 0 to n-1\n        count[arr[i]] += 1\n    for i from 1 to k-1\n        count[i] += count[i-1]\n    for i from n-1 down to 0\n        output[count[arr[i]]-1] = arr[i]\n        count[arr[i]] -= 1",
+    testCases: "Input: [4, 2, 2, 8, 3, 3, 1]\nOutput: [1, 2, 2, 3, 3, 4, 8]"
+  },
+  {
+    name: "Radix Sort",
+    description: "A non-comparative sorting algorithm that sorts data with integer keys by grouping the keys by individual digits that share the same significant position and value.",
+    timeComplexity: "O(nk) where k is the number of digits in the largest number",
+    spaceComplexity: "O(n + k)",
+    pseudocode: "radixSort(arr, n):\n    m = getMax(arr, n)\n    for exp = 1 to m/exp > 0\n        countSort(arr, n, exp)",
+    testCases: "Input: [170, 45, 75, 90, 802, 24, 2, 66]\nOutput: [2, 24, 45, 66, 75, 90, 170, 802]"
+  }
 ];
 
-function AlgorithmList() {
-  const navigate = useNavigate();
+const AlgorithmCard = ({ algorithm }) => (
+  <motion.div
+    whileHover={{ scale: 1.03 }}
+    transition={{ type: "spring", stiffness: 300 }}
+    className="h-full"
+  >
+    <Card className="flex flex-col h-full">
+      <CardHeader>
+        <CardTitle className="text-xl">{algorithm.name}</CardTitle>
+        <CardDescription>Time: {algorithm.timeComplexity} | Space: {algorithm.spaceComplexity}</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-grow">
+        <p className="line-clamp-4">{algorithm.description}</p>
+      </CardContent>
+      <CardFooter>
+        <Link to={`/algorithm/${algorithm.name.toLowerCase().replace(/\s+/g, '-')}`} className="w-full">
+          <Button variant="outline" className="w-full flex justify-between items-center">
+            Learn More <ChevronRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </CardFooter>
+    </Card>
+  </motion.div>
+);
 
-  const handleCodeEditorClick = (algoName) => {
-    navigate(`/algorithm/${algoName.toLowerCase().replace(/\s+/g, '-')}`);
-  };
-
+const AlgorithmList = () => {
   return (
-    <div className="container mx-auto mt-8">
-      <h1 className="text-3xl font-bold mb-6">Sorting Algorithms</h1>
-      <Accordion type="single" collapsible className="w-full">
-        {sortingAlgorithms.map((algo, index) => (
-          <AccordionItem key={index} value={`item-${index}`}>
-            <AccordionTrigger>{algo.name}</AccordionTrigger>
-            <AccordionContent>
-              <p className="mb-2">{algo.description}</p>
-              <p><strong>Time Complexity:</strong> {algo.timeComplexity}</p>
-              <p><strong>Space Complexity:</strong> {algo.spaceComplexity}</p>
-              <div className="mt-4">
-                <h3 className="font-semibold">Pseudocode:</h3>
-                <pre className="bg-gray-100 p-2 rounded mt-2">{algo.pseudocode}</pre>
-              </div>
-              <div className="mt-4">
-                <h3 className="font-semibold">Sample Test Case:</h3>
-                <p className="mt-2">{algo.testCases}</p>
-              </div>
-              <Button 
-                className="mt-4" 
-                onClick={() => handleCodeEditorClick(algo.name)}
-              >
-                Open in Code Editor
-              </Button>
-            </AccordionContent>
-          </AccordionItem>
+    <div className="container mx-auto px-4 py-8">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-4xl font-bold text-center mb-8"
+      >
+        Sorting Algorithms
+      </motion.h1>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        {sortingAlgorithms.map((algorithm, index) => (
+          <motion.div
+            key={algorithm.name}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <AlgorithmCard algorithm={algorithm} />
+          </motion.div>
         ))}
-      </Accordion>
+      </motion.div>
     </div>
   );
-}
+};
 
 export default AlgorithmList;
