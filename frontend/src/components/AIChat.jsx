@@ -4,10 +4,8 @@ import { Textarea } from "./ui/textarea";
 import { Send, Mic, Image, Compass, Camera, HelpCircle, Code } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { Input } from './ui/input';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { materialDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const AIChat = () => {
   const [messages, setMessages] = useState([]);
