@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "homepage": "https://jhaayush2004.github.io/react-Vite/",  
+  "homepage": "https://jhaayush2004.github.io/react-Vite/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy" : "npm run build", 
-    "deploy" : "gh-pages -d dist"     
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -31,6 +31,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.9.0",
+    "gh-pages": "^6.3.0",
     "lamejs": "^1.2.1",
     "lucide-react": "^0.439.0",
     "react": "^18.3.1",
@@ -41,7 +42,7 @@
     "react-markdown": "^9.0.1",
     "react-monaco-editor": "^0.56.1",
     "react-router-dom": "^6.26.2",
-    "react-syntax-highlighter": "^15.5.0",
+    "react-syntax-highlighter": "^5.8.0",
     "react-tsparticles": "^2.12.2",
     "react-type-animation": "^3.2.0",
     "tailwind-merge": "^2.5.2",
